@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<record record_id="5872">
+  <description>
+    <NomdelaPhoto meta_id="7051" meta_struct_id="1">hello</NomdelaPhoto>
+    <Rubrique meta_id="7052" meta_struct_id="2">salut</Rubrique>
+    <SousRubrique meta_id="7053" meta_struct_id="3">bye</SousRubrique>
+    <MotsCles meta_id="7054" meta_struct_id="4">kakoo</MotsCles>
+    <DatedeParution meta_id="7056" meta_struct_id="6">2012/04/13</DatedeParution>
+    <Ville meta_id="7057" meta_struct_id="9">paris</Ville>
+    <Pays meta_id="7058" meta_struct_id="11">france</Pays>
+    <DatePrisedeVue meta_id="7058" meta_struct_id="11">2012/04/13</DatePrisedeVue>
+    <Copyright meta_id="7059" meta_struct_id="12">yata</Copyright>
+  </description>
+  <doc AudioBitrate="96128" AudioCodec="ffaac" AudioSamplerate="48000" Duration="17" FileSize="7321846" FrameRate="30000.000" Height="480" MimeType="video/mp4" VideoBitrate="3331936" VideoCodec="ffodivx" Width="640"/>
+</record>

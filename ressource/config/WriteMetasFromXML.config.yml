@@ -1,0 +1,63 @@
+#Data Structure of th client
+structure:
+  Object:
+    src: IPTC:ObjectName
+  Category:
+    src: IPTC:Category
+  SupplCategory:
+    src: IPTC:SupplementalCategories
+  Keywords:
+    src: IPTC:Keywords
+    multi: true
+  SpecialInstruct: 
+    src: IPTC:SpecialInstructions
+  Date: 
+    src: IPTC:DateCreated
+  Byline: 
+    src: IPTC:By-line
+  BylineTitle: 
+    src: IPTC:By-lineTitle
+  City: 
+    src: IPTC:City 
+  Province: 
+    src: IPTC:Province-State
+  Country: 
+    src: IPTC:Country-PrimaryLocationName 
+  OriginalRef: 
+    src: IPTC:OriginalTransmissionReference
+  Headline: 
+    src: IPTC:Headline 
+  Credit: 
+    src: IPTC:Credit
+  Source: 
+    src: IPTC:Source
+  Caption: 
+    src: IPTC:Caption-Abstract 
+  CaptionWriter:
+    src: IPTC:Writer-Editor
+  Longitude: 
+    src: GPS:GPSLongitude
+  Latitude: 
+    src: GPS:GPSLatitude
+  CameraModel: 
+    src: IFD0:Model
+  FileName: 
+    src: PHRASEANET:tf-filename
+  FilePath: 
+    src: PHRASEANET:tf-filepath
+  Recordid: 
+    src: PHRASEANET:tf-recordid
+  MimeType: 
+    src: PHRASEANET:tf-mimetype
+  Size: 
+    src: PHRASEANET:tf-size
+  Extension: 
+    src: PHRASEANET:tf-extension
+  Width: 
+    src: PHRASEANET:tf-width
+  Height:
+    src: PHRASEANET:tf-height
+  Bits: 
+    src: PHRASEANET:tf-bits
+  Channels: 
+    src: PHRASEANET:tf-channels

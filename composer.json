@@ -1,0 +1,26 @@
+{
+  "name": "blender/blender",
+  "description": "Operate action & process on file from an input directory to an ouput directory ",
+  "require": {
+    "doctrine/orm": "2.2.1.*",
+    "symfony/console": "2.1.*",
+    "symfony/filesystem": "2.1.*",
+    "symfony/finder": "2.1.*",
+    "symfony/css-selector": "2.1.*",
+    "symfony/yaml": "2.1.*",
+    "symfony/dependency-injection": "2.1.*",
+    "monolog/monolog": "1.0.*",
+    "alchemy/exiftool": "master"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/alchemy-fr/exiftool"
+    }
+  ],
+  "autoload": {
+    "psr-0": {
+      "Blender": "src"
+    }
+  }
+}

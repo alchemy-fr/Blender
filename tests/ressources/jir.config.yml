@@ -1,0 +1,28 @@
+exiftool_binary_path : /path/to/the/binary
+
+structure:
+  NomdelaPhoto:
+    src: IPTC:Headline
+  Rubrique: 
+    src: IPTC:Category
+  SousRubrique: 
+    src: IPTC:SupplementalCategories
+  DatedeParution: 
+    src: IPTC:Source
+  DatePrisedeVue:
+    src: IPTC:DateCreated
+  Legende:
+    src: IPTC:Caption-Abstract
+  Signature:
+    src: IPTC:By-line
+  Ville:
+    src: IPTC:City
+  Pays: 
+    src: IPTC:Country-PrimaryLocationName
+  MotsCles: 
+    src: IPTC:Keywords
+  Copyright: 
+    src: IPTC:CopyrightNotice
+    
+    
+  
