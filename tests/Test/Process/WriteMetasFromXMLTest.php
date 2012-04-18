@@ -81,7 +81,7 @@ class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
 
     $this->process->blend($inputDir, $outputDir);
 
-    $exiftoolBinary = __DIR__ . '/../../../../vendor/alchemy/exiftool/exiftool';
+    $exiftoolBinary = __DIR__ . '/../../../vendor/alchemy/exiftool/exiftool';
 
     $metas = array(
         'NomdelaPhoto' => array(
