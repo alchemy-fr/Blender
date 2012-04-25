@@ -25,49 +25,49 @@ class WriteMetasFromXML implements BlenderInterface
 
     /**
      * A monolog logger
-     * @var Logger 
+     * @var Logger
      */
     protected $logger;
 
     /**
      * An array of options
-     * @var array 
+     * @var array
      */
     protected $options;
 
     /**
      * Path to the temporary folder
-     * @var string 
+     * @var string
      */
     protected $tempFolder;
 
     /**
      * Path to the log folder
-     * @var string 
+     * @var string
      */
     protected $logFolder;
 
     /**
      * Path to the log file
-     * @var string 
+     * @var string
      */
     protected $logFileName;
 
     /**
      * Path to the backup folder
-     * @var string 
+     * @var string
      */
     protected $backupFolder;
 
     /**
      * Provides basic utility to manipulate the file system.
-     * @var Filesystem 
+     * @var Filesystem
      */
     private $filesystem;
 
     /**
      * SQLite database
-     * @var \Blender\Database 
+     * @var \Blender\Database
      */
     protected $database;
 
@@ -168,7 +168,7 @@ class WriteMetasFromXML implements BlenderInterface
 
     public function blend($inputDir, $outputDir)
     {
-        $inputDir = rtrim($inputDir, '/');
+        $inputDir  = rtrim($inputDir, '/');
         $outputDir = rtrim($outputDir, '/');
 
         $this->filesystem->mkdir($this->tempFolder);
@@ -250,7 +250,7 @@ class WriteMetasFromXML implements BlenderInterface
 
     /**
      * Copy a file to a directory
-     * 
+     *
      * @param \SplFileInfo $file File to copy
      * @param string $dir Destination
      */
@@ -262,7 +262,7 @@ class WriteMetasFromXML implements BlenderInterface
 
     /**
      * Copy a file to the temporary folder
-     * 
+     *
      * @param \SplFileInfo $file File to copy
      */
     private function copyToTempDir(\SplFileInfo $file)
@@ -272,7 +272,7 @@ class WriteMetasFromXML implements BlenderInterface
 
     /**
      * Copy a file to the backup folder
-     * 
+     *
      * @param \SplFileInfo $file File to copy
      */
     private function backupFile(\SplFileInfo $file)
@@ -283,8 +283,8 @@ class WriteMetasFromXML implements BlenderInterface
 
     /**
      * `Return a Closure which sort file by date
-     * 
-     * @return Closure 
+     *
+     * @return Closure
      */
     private function sortByDate()
     {
@@ -296,8 +296,8 @@ class WriteMetasFromXML implements BlenderInterface
 
     /**
      * Return a Closure which bypass file with no XML associated
-     * 
-     * @return Closure 
+     *
+     * @return Closure
      */
     private function filterEliminateJpgWithNoXml()
     {
@@ -317,14 +317,14 @@ class WriteMetasFromXML implements BlenderInterface
     }
 
     /**
-     * Return associated XML File content 
-     * 
+     * Return associated XML File content
+     *
      * @param \SplFileInfo $file wanted file
-     * @return \DOMDocument 
+     * @return \DOMDocument
      */
     private function getAssociatedXmlFromFile(\SplFileInfo $file)
     {
-        $xmlFile = new \SplFileInfo(sprintf('%s/%sxml'
+        $xmlFile  = new \SplFileInfo(sprintf('%s/%sxml'
                                 , $file->getPath()
                                 , $file->getBasename($file->getExtension())
                 ));
@@ -336,9 +336,9 @@ class WriteMetasFromXML implements BlenderInterface
 
     /**
      * Extract metadatas from XML
-     * 
+     *
      * @param \DOMDocument $document wanted document
-     * @return array 
+     * @return array
      */
     private function extractDatasFromXML(\DOMDocument $document)
     {
@@ -353,14 +353,18 @@ class WriteMetasFromXML implements BlenderInterface
         foreach ($xpath->query($xPathQuery) as $node)
         {
             $nodeName = $node->nodeName;
-            $value = $node->nodeValue;
+            $value    = $node->nodeValue;
 
-            $meta = isset($structure[$nodeName]) ? $structure[$nodeName] : null;
+            $meta    = isset($structure[$nodeName]) ? $structure[$nodeName] : null;
             $isMulti = ! isset($meta['multi']) ? false :  ! ! $meta['multi'];
 
             if ( ! $meta)
             {
-                $this->logger->info(sprintf('Undefined meta name %s in ressources/config/WriteMetasFromXML.config', $nodeName));
+                $this->logger->info(sprintf(
+                                'Undefined meta name %s in ressources/config/WriteMetasFromXML.config'
+                                , $nodeName
+                        )
+                );
                 continue;
             }
 
@@ -369,7 +373,7 @@ class WriteMetasFromXML implements BlenderInterface
                 $datas[$nodeName] = array(
                     'values' => array(),
                     'meta_src' => $meta['src'],
-                    'multi' => $isMulti
+                    'multi'    => $isMulti
                 );
             }
             if ($nodeName == 'Date' ||
@@ -386,15 +390,15 @@ class WriteMetasFromXML implements BlenderInterface
 
     /**
      * Generate the exifTool command to write associated XML datas
-     * 
+     *
      * @param \SplFileInfo $file the file to write
-     * @return string 
+     * @return string
      */
     private function generateExifCmd(\SplFileInfo $file)
     {
         $document = $this->getAssociatedXmlFromFile($file);
-        $datas = $this->extractDatasFromXML($document);
-        $subCMD = $this->generateSubCmdFromDatas($datas);
+        $datas    = $this->extractDatasFromXML($document);
+        $subCMD   = $this->generateSubCmdFromDatas($datas);
 
         $exiftoolBinary = __DIR__ . '/../../../vendor/alchemy/exiftool/exiftool';
 
@@ -407,10 +411,10 @@ class WriteMetasFromXML implements BlenderInterface
     }
 
     /**
-     * Generate sub part of exifTool command 
-     * 
+     * Generate sub part of exifTool command
+     *
      * @param array $datas datas to write
-     * @return string 
+     * @return string
      */
     private function generateSubCmdFromDatas(array $datas)
     {
@@ -418,8 +422,8 @@ class WriteMetasFromXML implements BlenderInterface
 
         foreach ($datas as $field)
         {
-            $multi = $field['multi'];
-            $values = $field['values'];
+            $multi   = $field['multi'];
+            $values  = $field['values'];
             $metaSrc = $field['meta_src'];
 
             if ($multi)
@@ -442,7 +446,7 @@ class WriteMetasFromXML implements BlenderInterface
     }
 
     /**
-     * Contructor initialization 
+     * Contructor initialization
      */
     private function init()
     {

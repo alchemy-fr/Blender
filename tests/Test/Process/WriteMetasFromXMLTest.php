@@ -17,132 +17,132 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
 {
 
-  public static $filesystem;
-  protected $process;
+    public static $filesystem;
+    protected $process;
 
-  public static function setupBeforeClass()
-  {
-    self::$filesystem = new Filesystem();
-  }
+    public static function setupBeforeClass()
+    {
+        self::$filesystem = new Filesystem();
+    }
 
-  protected function setUp()
-  {
-    $output = new ConsoleOutput();
+    protected function setUp()
+    {
+        $output = new ConsoleOutput();
 
-    $logger = new Logger('WriteMetasFromXML');
-    $logger->pushHandler(new OutputHandler($output));
+        $logger = new Logger('WriteMetasFromXML');
+        $logger->pushHandler(new OutputHandler($output));
 
-    $options = array(
-        'no_backup' => false
-        , 'allow_duplicate' => false
-    );
+        $options = array(
+            'no_backup'       => false
+            , 'allow_duplicate' => false
+        );
 
-    self::$filesystem->remove(__DIR__ . '/../../ressources/blender.sqlite');
-    self::$filesystem->remove(glob(__DIR__ . "/../../ressources/output/*.jpg"));
-    self::$filesystem->remove(__DIR__ . '/../../ressources/tmp');
+        self::$filesystem->remove(__DIR__ . '/../../ressources/blender.sqlite');
+        self::$filesystem->remove(glob(__DIR__ . "/../../ressources/output/*.jpg"));
+        self::$filesystem->remove(__DIR__ . '/../../ressources/tmp');
 
-    $database = new Database(
-                    array(
-                        'path' => __DIR__ . '/../../ressources/blender.sqlite',
-                        'driver' => 'pdo_sqlite'
-                    ),
-                    new Configuration()
-    );
+        $database = new Database(
+                        array(
+                            'path'   => __DIR__ . '/../../ressources/blender.sqlite',
+                            'driver' => 'pdo_sqlite'
+                        ),
+                        new Configuration()
+        );
 
-    $config = new Config(__DIR__ . '/../../ressources/jir.config.yml');
+        $config = new Config(__DIR__ . '/../../ressources/jir.config.yml');
 
-    $process = new Process\WriteMetasFromXML(
-                    $config
-                    , $database
-                    , $logger
-                    , new ParameterBag($options)
-    );
+        $process = new Process\WriteMetasFromXML(
+                        $config
+                        , $database
+                        , $logger
+                        , new ParameterBag($options)
+        );
 
-    $tmpPath = __DIR__ . '/../../ressources/tmp';
+        $tmpPath = __DIR__ . '/../../ressources/tmp';
 
-    $process->setTempFolder($tmpPath . '/copy');
-    $process->setLogFolder($tmpPath . '/log');
-    $process->setBackupFolder($tmpPath . '/backup');
+        $process->setTempFolder($tmpPath . '/copy');
+        $process->setLogFolder($tmpPath . '/log');
+        $process->setBackupFolder($tmpPath . '/backup');
 
-    $this->process = $process;
-  }
+        $this->process = $process;
+    }
 
-  protected function tearDown()
-  {
-    self::$filesystem->remove(__DIR__ . '/../../ressources/blender.sqlite');
-    self::$filesystem->remove(glob(__DIR__ . "/../../ressources/output/*.jpg"));
-    self::$filesystem->remove(__DIR__ . '/../../ressources/tmp');
-  }
+    protected function tearDown()
+    {
+        self::$filesystem->remove(__DIR__ . '/../../ressources/blender.sqlite');
+        self::$filesystem->remove(glob(__DIR__ . "/../../ressources/output/*.jpg"));
+        self::$filesystem->remove(__DIR__ . '/../../ressources/tmp');
+    }
 
-  public function testBlender()
-  {
-    $inputDir = __DIR__ . '/../../ressources/input';
-    $outputDir = __DIR__ . '/../../ressources/output';
+    public function testBlender()
+    {
+        $inputDir  = __DIR__ . '/../../ressources/input';
+        $outputDir = __DIR__ . '/../../ressources/output';
 
-    $this->process->blend($inputDir, $outputDir);
+        $this->process->blend($inputDir, $outputDir);
 
-    $exiftoolBinary = __DIR__ . '/../../../vendor/alchemy/exiftool/exiftool';
+        $exiftoolBinary = __DIR__ . '/../../../vendor/alchemy/exiftool/exiftool';
 
-    $metas = array(
-        'NomdelaPhoto' => array(
-            'src' => 'IPTC:Headline',
-            'value' => 'hello'),
-        'Rubrique' => array(
-            'src' => 'IPTC:Category',
-            'value' => 'salut'),
+        $metas = array(
+            'NomdelaPhoto' => array(
+                'src'      => 'IPTC:Headline',
+                'value'    => 'hello'),
+            'Rubrique' => array(
+                'src'      => 'IPTC:Category',
+                'value'    => 'salut'),
 // @deprecated field
 //        'SousRubrique' => array(
 //            'src' => 'IPTC:SupplementalCategories',
 //            'value' => 'bye'),
-        'MotsCles' => array(
-            'src' => 'IPTC:Keywords',
-            'value' => 'kakoo'),
-        'DatedeParution' => array(
-            'src' => 'IPTC:Source',
-            'value' => '2012/04/13'),
-        'DatePrisedeVue' => array(
-            'src' => 'IPTC:DateCreated',
-            'value' => '2012:04:13'),
-        'Ville' => array(
-            'src' => 'IPTC:City',
-            'value' => 'paris'),
-        'Pays' => array(
-            'src' => 'IPTC:Country-PrimaryLocationName',
-            'value' => 'france'),
-        'Copyright' => array(
-            'src' => 'IPTC:CopyrightNotice',
-            'value' => 'yata')
-    );
+            'MotsCles' => array(
+                'src'            => 'IPTC:Keywords',
+                'value'          => 'kakoo'),
+            'DatedeParution' => array(
+                'src'            => 'IPTC:Source',
+                'value'          => '2012/04/13'),
+            'DatePrisedeVue' => array(
+                'src'   => 'IPTC:DateCreated',
+                'value' => '2012:04:13'),
+            'Ville' => array(
+                'src'   => 'IPTC:City',
+                'value' => 'paris'),
+            'Pays'  => array(
+                'src'       => 'IPTC:Country-PrimaryLocationName',
+                'value'     => 'france'),
+            'Copyright' => array(
+                'src'   => 'IPTC:CopyrightNotice',
+                'value' => 'yata')
+        );
 
-    $cmd = $exiftoolBinary . ' -X ' . __DIR__ . '/../../ressources/output/1.jpg';
-    $output = shell_exec($cmd);
-    if ($output)
-    {
-      $document = new \DOMDocument();
-      $document->loadXML($output);
-      $xpath = new \DOMXPath($document);
+        $cmd    = $exiftoolBinary . ' -X ' . __DIR__ . '/../../ressources/output/1.jpg';
+        $output = shell_exec($cmd);
+        if ($output)
+        {
+            $document = new \DOMDocument();
+            $document->loadXML($output);
+            $xpath    = new \DOMXPath($document);
 
-      $xPathQuery = CssSelector::toXPath('*');
-      foreach ($metas as $metaInfo)
-      {
-        $found = false;
-        foreach ($xpath->query($xPathQuery) as $node)
-        {
-          $nodeName = $node->nodeName;
-          $value = $node->nodeValue;
-          if ($nodeName == $metaInfo['src'])
-          {
-            $this->assertEquals($value, $metaInfo['value']);
-            $found = true;
-            continue;
-          }
+            $xPathQuery = CssSelector::toXPath('*');
+            foreach ($metas as $metaInfo)
+            {
+                $found = false;
+                foreach ($xpath->query($xPathQuery) as $node)
+                {
+                    $nodeName = $node->nodeName;
+                    $value    = $node->nodeValue;
+                    if ($nodeName == $metaInfo['src'])
+                    {
+                        $this->assertEquals($value, $metaInfo['value']);
+                        $found = true;
+                        continue;
+                    }
+                }
+                if ( ! $found)
+                {
+                    $this->fail('missing ' . $metaInfo['src']);
+                }
+            }
         }
-        if ( ! $found)
-        {
-          $this->fail('missing ' . $metaInfo['src']);
-        }
-      }
     }
-  }
 
 }

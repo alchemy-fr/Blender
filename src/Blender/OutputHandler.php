@@ -9,26 +9,26 @@ use Monolog\Logger;
 class OutputHandler extends AbstractProcessingHandler
 {
 
-  protected $output;
+    protected $output;
 
-  public function __construct(OutputInterface $output, $level = Logger::DEBUG, $bubble = true)
-  {
-    parent::__construct($level, $bubble);
-    $this->output = $output;
-  }
-
-  public function close()
-  {
-    $this->output = null;
-  }
-
-  protected function write(array $record)
-  {
-    if(null !== $this->output)
+    public function __construct(OutputInterface $output, $level = Logger::DEBUG, $bubble = true)
     {
-      $this->output->write((string) $record['formatted']);
+        parent::__construct($level, $bubble);
+        $this->output = $output;
     }
-  }
+
+    public function close()
+    {
+        $this->output = null;
+    }
+
+    protected function write(array $record)
+    {
+        if (null !== $this->output)
+        {
+            $this->output->write((string) $record['formatted']);
+        }
+    }
 
 }
 
