@@ -183,11 +183,13 @@ class WriteMetasFromXML implements BlenderInterface
         $finder = new Finder();
 
         $finder->files()
-                ->name('*.jpg')
-                ->name('*.xml')
+                ->name('/.*\.jpg$/i')
+                ->name('/.*\.xml$/i')
                 ->filter($this->filterEliminateJpgWithNoXml())
                 ->in($inputDir)
                 ->sort($this->sortByDate());
+
+        var_dump(iterator_count($finder));
 
         $backupOneFile = false;
         foreach ($finder as $file)
@@ -196,7 +198,10 @@ class WriteMetasFromXML implements BlenderInterface
 
             $md5 = md5_file($file->getPathname());
 
-            $this->logger->info(sprintf('processing file %s', $file->getPathname()));
+            if (strtolower($file->getExtension()) === 'jpg')
+            {
+                $this->logger->info(sprintf('found file %s', $file->getPathname()));
+            }
 
             if ($allowDuplicate || ! $this->database->contains($md5))
             {
@@ -204,9 +209,7 @@ class WriteMetasFromXML implements BlenderInterface
 
                 $this->copyToTempDir($file);
 
-                $this->logger->info(sprintf('inserting file in database %s', $file->getPathname()));
-
-                if ( ! $this->options->get('no_backup') && $file->getExtension() === 'jpg')
+                if ( ! $this->options->get('no_backup') && strtolower($file->getExtension()) === 'jpg')
                 {
                     $this->backupFile($file);
                     $backupOneFile = true;
@@ -223,15 +226,17 @@ class WriteMetasFromXML implements BlenderInterface
         $finder = new Finder();
 
         $finder->files()
-                ->name('*.jpg')
+                ->name('/.*\.jpg$/i')
                 ->in($this->tempFolder);
+
+        $this->logger->info(sprintf('fetching %s dir ', $this->tempFolder));
 
         //merge xml & meta
         foreach ($finder as $file)
         {
             $cmd = $this->generateExifCmd($file);
 
-            $this->logger->info(sprintf('execute cmd %s', $cmd));
+            $this->logger->info(sprintf('execute cmd %s for file %s', $cmd, $file->getFilename()));
 
             if (null === trim(shell_exec($cmd)))
             {
@@ -239,6 +244,7 @@ class WriteMetasFromXML implements BlenderInterface
             }
 
             $this->copyToDir($file, $outputDir);
+            $this->logger->info(sprintf('copy file %s to %s', $file->getFilename(), $outputDir));
         }
     }
 
@@ -252,7 +258,6 @@ class WriteMetasFromXML implements BlenderInterface
     {
         $dest = $dir . '/' . $file->getBasename();
         $this->filesystem->copy($file->getPathname(), $dest);
-        $this->logger->info(sprintf('copy filename %s to %s', $file->getPathname(), $dest));
     }
 
     /**
@@ -273,7 +278,7 @@ class WriteMetasFromXML implements BlenderInterface
     private function backupFile(\SplFileInfo $file)
     {
         $this->copyToDir($file, $this->backupFolder);
-        $this->logger->info(sprintf('backup file %s to', $file->getPathname()));
+        $this->logger->info(sprintf('backup file %s to %s', $file->getPathname(), $this->backupFolder));
     }
 
     /**
@@ -298,7 +303,7 @@ class WriteMetasFromXML implements BlenderInterface
     {
         return function (\SplFileInfo $file)
                 {
-                    if ($file->getExtension() !== 'xml')
+                    if (strtolower($file->getExtension()) !== 'xml')
                     {
                         $fileName = sprintf('%s/%sxml'
                                 , $file->getPath()
@@ -355,7 +360,7 @@ class WriteMetasFromXML implements BlenderInterface
 
             if ( ! $meta)
             {
-                $this->logger->log(sprintf('undefined meta name %s', $nodeName));
+                $this->logger->info(sprintf('Undefined meta name %s in ressources/config/WriteMetasFromXML.config', $nodeName));
                 continue;
             }
 
