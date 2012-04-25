@@ -30,7 +30,7 @@ class Database
       $filesystem->touch($this->params['path']);
       chmod($this->params['path'], 0777);
     }
-    $query = 'CREATE TABLE IF NOT EXISTS blender(id INTEGER PRIMARY KEY ASC, md5 TEXT UNIQUE);';
+    $query = 'CREATE TABLE IF NOT EXISTS blender(id INTEGER PRIMARY KEY ASC, md5 TEXT);';
     $this->conn->executeQuery($query);
   }
 
