@@ -7,7 +7,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class Database
 {
-
     /**
      *
      * @var Doctrine\DBAL\Connection

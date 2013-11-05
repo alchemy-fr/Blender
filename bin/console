@@ -8,11 +8,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 use Blender\Command;
 
-require_once __DIR__ . '/../bootstrap.php';
-
+require_once __DIR__ . '/../vendor/autoload.php';
 
 $app = new Application("Blender console");
-
 $app->add(new Blender\Command\WriteMetasFromXML('wmfx'));
-
-$app->run();
+exit($app->run());
