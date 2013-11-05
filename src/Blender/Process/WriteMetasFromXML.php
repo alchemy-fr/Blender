@@ -209,8 +209,8 @@ class WriteMetasFromXML implements BlenderInterface
         $finder = new Finder();
 
         $finder->files()
-        ->notName('/.*\.xml$/i')
-                ->in($this->tempFolder);
+            ->notName('/.*\.xml$/i')
+            ->in($this->tempFolder);
 
         $this->logger->info(sprintf('fetching %s dir ', $this->tempFolder));
 
