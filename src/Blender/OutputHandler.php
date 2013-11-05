@@ -24,11 +24,9 @@ class OutputHandler extends AbstractProcessingHandler
 
     protected function write(array $record)
     {
-        if (null !== $this->output)
-        {
+        if (null !== $this->output) {
             $this->output->write((string) $record['formatted']);
         }
     }
 
 }
-

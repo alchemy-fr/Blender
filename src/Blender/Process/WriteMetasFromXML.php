@@ -2,10 +2,6 @@
 
 namespace Blender\Process;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
@@ -18,7 +14,6 @@ use Blender\Config;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use PHPExiftool;
-use Doctrine;
 
 class WriteMetasFromXML implements BlenderInterface
 {
@@ -174,8 +169,7 @@ class WriteMetasFromXML implements BlenderInterface
         $this->filesystem->mkdir($this->tempFolder);
         $this->filesystem->mkdir($this->logFolder);
 
-        if ( ! $this->options->get('no_backup'))
-        {
+        if ( ! $this->options->get('no_backup')) {
             $this->filesystem->mkdir($this->backupFolder);
         }
 
@@ -190,35 +184,28 @@ class WriteMetasFromXML implements BlenderInterface
                 ->sort($this->sortByDate());
 
         $backupOneFile = false;
-        foreach ($finder as $file)
-        {
+        foreach ($finder as $file) {
             $allowDuplicate = $this->options->get('allow_duplicate');
 
             $md5 = md5_file($file->getPathname());
 
-            if (strtolower($file->getExtension()) === 'jpg')
-            {
+            if (strtolower($file->getExtension()) === 'jpg') {
                 $this->logger->info(sprintf('found file %s', $file->getPathname()));
             }
 
-            if ($allowDuplicate || ! $this->database->contains($md5))
-            {
+            if ($allowDuplicate || ! $this->database->contains($md5)) {
                 $this->database->insert($md5);
 
                 $this->copyToTempDir($file);
 
-                if ( ! $this->options->get('no_backup') && strtolower($file->getExtension()) === 'jpg')
-                {
+                if ( ! $this->options->get('no_backup') && strtolower($file->getExtension()) === 'jpg') {
                     $this->backupFile($file);
                     $backupOneFile = true;
                 }
-            }
-            else
-            {
+            } else {
                 $this->logger->info(sprintf('duplicate file %s', $file->getPathname()));
             }
         }
-
 
         //parse temp dir
         $finder = new Finder();
@@ -230,14 +217,12 @@ class WriteMetasFromXML implements BlenderInterface
         $this->logger->info(sprintf('fetching %s dir ', $this->tempFolder));
 
         //merge xml & meta
-        foreach ($finder as $file)
-        {
+        foreach ($finder as $file) {
             $cmd = $this->generateExifCmd($file);
 
             $this->logger->info(sprintf('execute cmd %s for file %s', $cmd, $file->getFilename()));
 
-            if (null === trim(shell_exec($cmd)))
-            {
+            if (null === trim(shell_exec($cmd))) {
                 $this->logger->info(sprintf('failed to execute the cmd %s', $cmd));
             }
 
@@ -250,7 +235,7 @@ class WriteMetasFromXML implements BlenderInterface
      * Copy a file to a directory
      *
      * @param \SplFileInfo $file File to copy
-     * @param string $dir Destination
+     * @param string       $dir  Destination
      */
     private function copyToDir(\SplFileInfo $file, $dir)
     {
@@ -286,8 +271,7 @@ class WriteMetasFromXML implements BlenderInterface
      */
     private function sortByDate()
     {
-        return function (\SplFileInfo $a, \SplFileInfo $b)
-                {
+        return function (\SplFileInfo $a, \SplFileInfo $b) {
                     return $a->getMTime() > $b->getMTime();
                 };
     }
@@ -299,10 +283,8 @@ class WriteMetasFromXML implements BlenderInterface
      */
     private function filterEliminateJpgWithNoXml()
     {
-        return function (\SplFileInfo $file)
-                {
-                    if (strtolower($file->getExtension()) !== 'xml')
-                    {
+        return function (\SplFileInfo $file) {
+                    if (strtolower($file->getExtension()) !== 'xml') {
                         $fileName = sprintf('%s/%sxml'
                                 , $file->getPath()
                                 , $file->getBasename($file->getExtension())
@@ -310,6 +292,7 @@ class WriteMetasFromXML implements BlenderInterface
 
                         return file_exists($fileName);
                     }
+
                     return true;
                 };
     }
@@ -317,7 +300,7 @@ class WriteMetasFromXML implements BlenderInterface
     /**
      * Return associated XML File content
      *
-     * @param \SplFileInfo $file wanted file
+     * @param  \SplFileInfo $file wanted file
      * @return \DOMDocument
      */
     private function getAssociatedXmlFromFile(\SplFileInfo $file)
@@ -335,7 +318,7 @@ class WriteMetasFromXML implements BlenderInterface
     /**
      * Extract metadatas from XML
      *
-     * @param \DOMDocument $document wanted document
+     * @param  \DOMDocument $document wanted document
      * @return array
      */
     private function extractDatasFromXML(\DOMDocument $document)
@@ -348,16 +331,14 @@ class WriteMetasFromXML implements BlenderInterface
 
         $structure = $this->config->get('structure');
 
-        foreach ($xpath->query($xPathQuery) as $node)
-        {
+        foreach ($xpath->query($xPathQuery) as $node) {
             $nodeName = $node->nodeName;
             $value    = $node->nodeValue;
 
             $meta    = isset($structure[$nodeName]) ? $structure[$nodeName] : null;
             $isMulti = ! isset($meta['multi']) ? false :  ! ! $meta['multi'];
 
-            if ( ! $meta)
-            {
+            if (! $meta) {
                 $this->logger->info(sprintf(
                                 'Undefined meta name %s in ressources/config/WriteMetasFromXML.config'
                                 , $nodeName
@@ -366,8 +347,7 @@ class WriteMetasFromXML implements BlenderInterface
                 continue;
             }
 
-            if ( ! isset($datas[$nodeName]))
-            {
+            if ( ! isset($datas[$nodeName])) {
                 $datas[$nodeName] = array(
                     'values' => array(),
                     'meta_src' => $meta['src'],
@@ -389,7 +369,7 @@ class WriteMetasFromXML implements BlenderInterface
     /**
      * Generate the exifTool command to write associated XML datas
      *
-     * @param \SplFileInfo $file the file to write
+     * @param  \SplFileInfo $file the file to write
      * @return string
      */
     private function generateExifCmd(\SplFileInfo $file)
@@ -410,29 +390,24 @@ class WriteMetasFromXML implements BlenderInterface
     /**
      * Generate sub part of exifTool command
      *
-     * @param array $datas datas to write
+     * @param  array  $datas datas to write
      * @return string
      */
     private function generateSubCmdFromDatas(array $datas)
     {
         $subCMD = '';
 
-        foreach ($datas as $field)
-        {
+        foreach ($datas as $field) {
             $multi   = $field['multi'];
             $values  = $field['values'];
             $metaSrc = $field['meta_src'];
 
-            if ($multi)
-            {
-                foreach ($values as $value)
-                {
+            if ($multi) {
+                foreach ($values as $value) {
                     $subCMD .= ' -' . $metaSrc . '=';
                     $subCMD .= escapeshellarg($value) . ' ';
                 }
-            }
-            else
-            {
+            } else {
                 $value = array_pop($values);
                 $subCMD .= ' -' . $metaSrc . '=';
                 $subCMD .= escapeshellarg($value) . ' ';

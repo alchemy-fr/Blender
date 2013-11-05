@@ -24,8 +24,7 @@ class Database
 
     private function init()
     {
-        if ( ! file_exists($this->params['path']))
-        {
+        if ( ! file_exists($this->params['path'])) {
             $filesystem = new Filesystem();
             $filesystem->touch($this->params['path']);
             chmod($this->params['path'], 0777);
@@ -56,4 +55,3 @@ class Database
     }
 
 }
-

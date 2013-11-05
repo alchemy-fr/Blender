@@ -8,11 +8,8 @@ use Blender\Database;
 use Doctrine\DBAL\Configuration;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
-use Blender\OutputHandler;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\CssSelector\CssSelector;
-use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
@@ -115,29 +112,24 @@ class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
 
         $cmd    = $exiftoolBinary . ' -X ' . __DIR__ . '/../../../ressources/output/1.jpg';
         $output = shell_exec($cmd);
-        if ($output)
-        {
+        if ($output) {
             $document = new \DOMDocument();
             $document->loadXML($output);
             $xpath    = new \DOMXPath($document);
 
             $xPathQuery = CssSelector::toXPath('*');
-            foreach ($metas as $metaInfo)
-            {
+            foreach ($metas as $metaInfo) {
                 $found = false;
-                foreach ($xpath->query($xPathQuery) as $node)
-                {
+                foreach ($xpath->query($xPathQuery) as $node) {
                     $nodeName = $node->nodeName;
                     $value    = $node->nodeValue;
-                    if ($nodeName == $metaInfo['src'])
-                    {
+                    if ($nodeName == $metaInfo['src']) {
                         $this->assertEquals($value, $metaInfo['value']);
                         $found = true;
                         continue;
                     }
                 }
-                if ( ! $found)
-                {
+                if (! $found) {
                     $this->fail('missing ' . $metaInfo['src']);
                 }
             }
