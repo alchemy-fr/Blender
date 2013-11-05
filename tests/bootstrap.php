@@ -1,3 +1,4 @@
 <?php
 
-require __DIR__ . '/../vendor/.composer/autoload.php';
+$loader = require __DIR__.'/../vendor/autoload.php';
+$loader->add('Test', __DIR__);

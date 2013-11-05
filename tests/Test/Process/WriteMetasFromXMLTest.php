@@ -6,6 +6,7 @@ use Blender\Process;
 use Blender\Config;
 use Blender\Database;
 use Doctrine\DBAL\Configuration;
+use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 use Blender\OutputHandler;
 use Symfony\Component\Filesystem\Filesystem;
@@ -27,10 +28,8 @@ class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $output = new ConsoleOutput();
-
         $logger = new Logger('WriteMetasFromXML');
-        $logger->pushHandler(new OutputHandler($output));
+        $logger->pushHandler(new NullHandler());
 
         $options = array(
             'no_backup'       => false
@@ -81,7 +80,7 @@ class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
 
         $this->process->blend($inputDir, $outputDir);
 
-        $exiftoolBinary = __DIR__ . '/../../../vendor/alchemy/exiftool/exiftool';
+        $exiftoolBinary = __DIR__ . '/../../../vendor/phpexiftool/exiftool/exiftool';
 
         $metas = array(
             'NomdelaPhoto' => array(

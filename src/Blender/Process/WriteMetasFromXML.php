@@ -189,8 +189,6 @@ class WriteMetasFromXML implements BlenderInterface
                 ->in($inputDir)
                 ->sort($this->sortByDate());
 
-        var_dump(iterator_count($finder));
-
         $backupOneFile = false;
         foreach ($finder as $file)
         {
@@ -400,13 +398,12 @@ class WriteMetasFromXML implements BlenderInterface
         $datas    = $this->extractDatasFromXML($document);
         $subCMD   = $this->generateSubCmdFromDatas($datas);
 
-        $exiftoolBinary = __DIR__ . '/../../../vendor/alchemy/exiftool/exiftool';
+        $exiftoolBinary = __DIR__ . '/../../../vendor/phpexiftool/exiftool/exiftool';
 
         $cmd = $exiftoolBinary . ' -m -overwrite_original ';
         $cmd .= ' -codedcharacterset=utf8 ';
         $cmd .= $subCMD . ' ' . escapeshellarg($file);
 
-        echo $cmd . "\n";
         return $cmd;
     }
 

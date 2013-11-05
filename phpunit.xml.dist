@@ -10,7 +10,7 @@
          stopOnFailure="false"
          syntaxCheck="true"
          verbose="false"
-         bootstrap="bootstrap.php"
+         bootstrap="tests/bootstrap.php"
 >
     <php>
       <ini name="display_errors" value="on"/>
