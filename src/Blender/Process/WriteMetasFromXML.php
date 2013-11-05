@@ -183,7 +183,6 @@ class WriteMetasFromXML implements BlenderInterface
                 ->in($inputDir)
                 ->sort($this->sortByDate());
 
-        $backupOneFile = false;
         foreach ($finder as $file) {
             $allowDuplicate = $this->options->get('allow_duplicate');
 
@@ -200,7 +199,6 @@ class WriteMetasFromXML implements BlenderInterface
 
                 if ( ! $this->options->get('no_backup') && strtolower($file->getExtension()) === 'jpg') {
                     $this->backupFile($file);
-                    $backupOneFile = true;
                 }
             } else {
                 $this->logger->info(sprintf('duplicate file %s', $file->getPathname()));
@@ -211,7 +209,7 @@ class WriteMetasFromXML implements BlenderInterface
         $finder = new Finder();
 
         $finder->files()
-                ->name('/.*\.jpg$/i')
+        ->notName('/.*\.xml$/i')
                 ->in($this->tempFolder);
 
         $this->logger->info(sprintf('fetching %s dir ', $this->tempFolder));
@@ -272,8 +270,8 @@ class WriteMetasFromXML implements BlenderInterface
     private function sortByDate()
     {
         return function (\SplFileInfo $a, \SplFileInfo $b) {
-                    return $a->getMTime() > $b->getMTime();
-                };
+            return $a->getMTime() > $b->getMTime();
+        };
     }
 
     /**
@@ -284,17 +282,12 @@ class WriteMetasFromXML implements BlenderInterface
     private function filterEliminateJpgWithNoXml()
     {
         return function (\SplFileInfo $file) {
-                    if (strtolower($file->getExtension()) !== 'xml') {
-                        $fileName = sprintf('%s/%sxml'
-                                , $file->getPath()
-                                , $file->getBasename($file->getExtension())
-                        );
+            if (strtolower($file->getExtension()) !== 'xml') {
+                return file_exists(sprintf('%s/%sxml', $file->getPath(), $file->getBasename($file->getExtension())));
+            }
 
-                        return file_exists($fileName);
-                    }
-
-                    return true;
-                };
+            return true;
+        };
     }
 
     /**
@@ -305,12 +298,8 @@ class WriteMetasFromXML implements BlenderInterface
      */
     private function getAssociatedXmlFromFile(\SplFileInfo $file)
     {
-        $xmlFile  = new \SplFileInfo(sprintf('%s/%sxml'
-                                , $file->getPath()
-                                , $file->getBasename($file->getExtension())
-                ));
         $document = new \DOMDocument();
-        $document->loadXML(file_get_contents($xmlFile->getPathname()));
+        $document->loadXML(file_get_contents(sprintf('%s/%sxml', $file->getPath(), $file->getBasename($file->getExtension()))));
 
         return $document;
     }
@@ -324,11 +313,8 @@ class WriteMetasFromXML implements BlenderInterface
     private function extractDatasFromXML(\DOMDocument $document)
     {
         $datas = array();
-
         $xpath = new \DOMXPath($document);
-
         $xPathQuery = CssSelector::toXPath('description > *');
-
         $structure = $this->config->get('structure');
 
         foreach ($xpath->query($xPathQuery) as $node) {
@@ -339,11 +325,7 @@ class WriteMetasFromXML implements BlenderInterface
             $isMulti = ! isset($meta['multi']) ? false :  ! ! $meta['multi'];
 
             if (! $meta) {
-                $this->logger->info(sprintf(
-                                'Undefined meta name %s in resources/config/WriteMetasFromXML.config'
-                                , $nodeName
-                        )
-                );
+                $this->logger->info(sprintf('Undefined meta name %s in resources/config/WriteMetasFromXML.config', $nodeName));
                 continue;
             }
 
@@ -354,9 +336,7 @@ class WriteMetasFromXML implements BlenderInterface
                     'multi'    => $isMulti
                 );
             }
-            if ($nodeName == 'Date' ||
-                    $nodeName == 'DatePrisedeVue')
-            {
+            if ($nodeName == 'Date' || $nodeName == 'DatePrisedeVue') {
                 $value = str_replace('/', ':', $value);
             }
 
@@ -429,9 +409,6 @@ class WriteMetasFromXML implements BlenderInterface
         $this->backupFolder = sys_get_temp_dir() . '/blender/backup';
         $this->logFileName = $this->logFolder . '/WriteMetasFromXML.log';
 
-        $this->logger->pushHandler(
-                new StreamHandler($this->logFileName, Logger::WARNING)
-        );
+        $this->logger->pushHandler(new StreamHandler($this->logFileName, Logger::WARNING));
     }
-
 }

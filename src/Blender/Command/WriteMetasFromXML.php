@@ -17,24 +17,13 @@ use Blender;
 
 class WriteMetasFromXML extends Blender\AbstractCommand
 {
-
     protected function configure()
     {
         $this
                 ->setDescription(sprintf('Write metadatas in documents from an associated XML file which has the same name.
          You can edit metadatas configuration file structure here from project root %s', '/resource/config/WriteMetasFromXML.config.yml'))
-                ->addOption(
-                        'no_backup'
-                        , null
-                        , InputOption::VALUE_NONE
-                        , 'backups original files'
-                )
-                ->addOption(
-                        'allow_duplicate'
-                        , null
-                        , InputOption::VALUE_NONE
-                        , 'allow duplicate files'
-                )
+                ->addOption('no_backup', null, InputOption::VALUE_NONE, 'backups original files')
+                ->addOption('allow_duplicate', null, InputOption::VALUE_NONE, 'allow duplicate files')
         ;
     }
 
@@ -48,23 +37,14 @@ class WriteMetasFromXML extends Blender\AbstractCommand
         $logger = new Logger('WriteMetasFromXML');
         $logger->pushHandler(new OutputHandler($output));
 
-        $database = new Database(
-                        array(
-                            'path'   => __DIR__ . '/../../../resource/db/WriteMetasFromXML.sqlite',
-                            'driver' => 'pdo_sqlite'
-                        ),
-                        new Doctrine\DBAL\Configuration()
-        );
+        $database = new Database(array(
+            'path'   => __DIR__ . '/../../../resource/db/WriteMetasFromXML.sqlite',
+            'driver' => 'pdo_sqlite'
+        ), new Doctrine\DBAL\Configuration());
 
         $config = new Config(__DIR__ . '/../../../resource/config/WriteMetasFromXML.config.yml');
 
-        $blender = new Process\WriteMetasFromXML(
-                        $config
-                        , $database
-                        , $logger
-                        , new ParameterBag($options)
-        );
+        $blender = new Process\WriteMetasFromXML($config, $database, $logger, new ParameterBag($options));
         $blender->blend($input->getArgument('input_dir'), $input->getArgument('output_dir'));
     }
-
 }

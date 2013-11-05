@@ -8,7 +8,6 @@ use Monolog\Logger;
 
 class OutputHandler extends AbstractProcessingHandler
 {
-
     protected $output;
 
     public function __construct(OutputInterface $output, $level = Logger::DEBUG, $bubble = true)
@@ -28,5 +27,4 @@ class OutputHandler extends AbstractProcessingHandler
             $this->output->write((string) $record['formatted']);
         }
     }
-
 }

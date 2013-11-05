@@ -35,7 +35,6 @@ class Database
     public function contains($md5)
     {
         $query = 'SELECT * FROM blender WHERE md5 = "' . $md5 . '"';
-
         $rs = $this->conn->fetchArray($query);
 
         return $rs ? count($rs) > 0 : $rs;
@@ -44,7 +43,6 @@ class Database
     public function insert($md5)
     {
         $query = 'INSERT INTO blender (md5) values ("' . $md5 . '");';
-
         $this->conn->executeQuery($query);
     }
 
@@ -52,5 +50,4 @@ class Database
     {
         return $this->params['path'];
     }
-
 }

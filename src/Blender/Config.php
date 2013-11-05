@@ -7,7 +7,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 class Config
 {
-
     /**
      *
      * @var ParameterBag
@@ -23,5 +22,4 @@ class Config
     {
         return $this->config->get($key);
     }
-
 }
