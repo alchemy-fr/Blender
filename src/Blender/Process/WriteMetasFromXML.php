@@ -340,7 +340,7 @@ class WriteMetasFromXML implements BlenderInterface
 
             if (! $meta) {
                 $this->logger->info(sprintf(
-                                'Undefined meta name %s in ressources/config/WriteMetasFromXML.config'
+                                'Undefined meta name %s in resources/config/WriteMetasFromXML.config'
                                 , $nodeName
                         )
                 );

@@ -33,19 +33,19 @@ class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
             , 'allow_duplicate' => false
         );
 
-        self::$filesystem->remove(__DIR__ . '/../../../ressources/blender.sqlite');
-        self::$filesystem->remove(glob(__DIR__ . "/../../../ressources/output/*.jpg"));
-        self::$filesystem->remove(__DIR__ . '/../../../ressources/tmp');
+        self::$filesystem->remove(__DIR__ . '/../../../resource/blender.sqlite');
+        self::$filesystem->remove(glob(__DIR__ . "/../../../resource/output/*.jpg"));
+        self::$filesystem->remove(__DIR__ . '/../../../resource/tmp');
 
         $database = new Database(
                         array(
-                            'path'   => __DIR__ . '/../../../ressources/blender.sqlite',
+                            'path'   => __DIR__ . '/../../../resource/blender.sqlite',
                             'driver' => 'pdo_sqlite'
                         ),
                         new Configuration()
         );
 
-        $config = new Config(__DIR__ . '/../../../ressources/jir.config.yml');
+        $config = new Config(__DIR__ . '/../../../resource/jir.config.yml');
 
         $process = new Process\WriteMetasFromXML(
                         $config
@@ -54,7 +54,7 @@ class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
                         , new ParameterBag($options)
         );
 
-        $tmpPath = __DIR__ . '/../../../ressources/tmp';
+        $tmpPath = __DIR__ . '/../../../resource/tmp';
 
         $process->setTempFolder($tmpPath . '/copy');
         $process->setLogFolder($tmpPath . '/log');
@@ -65,15 +65,15 @@ class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-        self::$filesystem->remove(__DIR__ . '/../../../ressources/blender.sqlite');
-        self::$filesystem->remove(glob(__DIR__ . "/../../../ressources/output/*.jpg"));
-        self::$filesystem->remove(__DIR__ . '/../../../ressources/tmp');
+        self::$filesystem->remove(__DIR__ . '/../../../resource/blender.sqlite');
+        self::$filesystem->remove(glob(__DIR__ . "/../../../resource/output/*.jpg"));
+        self::$filesystem->remove(__DIR__ . '/../../../resource/tmp');
     }
 
     public function testBlender()
     {
-        $inputDir  = __DIR__ . '/../../../ressources/input';
-        $outputDir = __DIR__ . '/../../../ressources/output';
+        $inputDir  = __DIR__ . '/../../../resource/input';
+        $outputDir = __DIR__ . '/../../../resource/output';
 
         $this->process->blend($inputDir, $outputDir);
 
@@ -110,7 +110,7 @@ class WriteMetasFromXMLTest extends \PHPUnit_Framework_TestCase
                 'value' => 'yata')
         );
 
-        $cmd    = $exiftoolBinary . ' -X ' . __DIR__ . '/../../../ressources/output/1.jpg';
+        $cmd    = $exiftoolBinary . ' -X ' . __DIR__ . '/../../../resource/output/1.jpg';
         $output = shell_exec($cmd);
         if ($output) {
             $document = new \DOMDocument();

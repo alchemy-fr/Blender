@@ -22,7 +22,7 @@ class WriteMetasFromXML extends Blender\AbstractCommand
     {
         $this
                 ->setDescription(sprintf('Write metadatas in documents from an associated XML file which has the same name.
-         You can edit metadatas configuration file structure here from project root %s', '/ressources/config/WriteMetasFromXML.config.yml'))
+         You can edit metadatas configuration file structure here from project root %s', '/resource/config/WriteMetasFromXML.config.yml'))
                 ->addOption(
                         'no_backup'
                         , null
@@ -50,13 +50,13 @@ class WriteMetasFromXML extends Blender\AbstractCommand
 
         $database = new Database(
                         array(
-                            'path'   => __DIR__ . '/../../../ressource/db/WriteMetasFromXML.sqlite',
+                            'path'   => __DIR__ . '/../../../resource/db/WriteMetasFromXML.sqlite',
                             'driver' => 'pdo_sqlite'
                         ),
                         new Doctrine\DBAL\Configuration()
         );
 
-        $config = new Config(__DIR__ . '/../../../ressource/config/WriteMetasFromXML.config.yml');
+        $config = new Config(__DIR__ . '/../../../resource/config/WriteMetasFromXML.config.yml');
 
         $blender = new Process\WriteMetasFromXML(
                         $config
