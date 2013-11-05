@@ -64,7 +64,7 @@ class WriteMetasFromXML extends Blender\AbstractCommand
                         , $logger
                         , new ParameterBag($options)
         );
-        $blender->blend($input->getOption('input_dir'), $input->getOption('output_dir'));
+        $blender->blend($input->getArgument('input_dir'), $input->getArgument('output_dir'));
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace Blender;
 
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Command\Command;
 
 abstract class AbstractCommand extends Command
@@ -13,18 +13,18 @@ abstract class AbstractCommand extends Command
         parent::__construct($name);
 
         $this
-                ->addOption(
+                ->addArgument(
                         'input_dir'
                         , null
-                        , InputOption::VALUE_REQUIRED
-                        , 'precise the input directory'
-                        , array()
+                        , InputArgument::REQUIRED
+                        , 'Input directory'
+                        , null
                 )
-                ->addOption(
+                ->addArgument(
                         'output_dir'
                         , null
-                        , InputOption::VALUE_REQUIRED
-                        , 'precise the output directory'
+                        , InputArgument::REQUIRED
+                        , 'Output directory'
         );
     }
 
